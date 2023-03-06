@@ -14,9 +14,10 @@
         }
     ],
     "require": {
-        "illuminate/support": "^9.0|^10.2",
+        "illuminate/config": "^9.0|^10.2",
         "illuminate/console": "^9.0|^10.2",
-        "illuminate/config": "^9.0|^10.2"
+        "illuminate/database": "^9.0|^10.2",
+        "illuminate/support": "^9.0|^10.2"
     },
     "extra": {
         "laravel": {
