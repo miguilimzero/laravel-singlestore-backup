@@ -3,6 +3,7 @@
 namespace Srdante\LaravelSinglestoreBackup\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -13,7 +14,7 @@ class SinglestoreBackupCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'singlestore:backup {--init} (--differential} {--timeout=} {--multipart_chunk_size_mb=}';
+    protected $signature = 'singlestore:backup {--init} {--differential} {--timeout=} {--multipart_chunk_size_mb=}';
 
     /**
      * The console command description.
@@ -53,13 +54,17 @@ class SinglestoreBackupCommand extends Command
             $timeout = "TIMEOUT {$this->option('timeout')}";
         }
 
-        /**
+        /*
          * Do backup query
          */
+        $rawQuery = "BACKUP DATABASE {$database} {$with} TO S3 ? {$timeout} CONFIG ? CREDENTIALS ?";
+        $rawQuery = preg_replace('/\s+/', ' ', $rawQuery);
+
         try {
-            $result = DB::statement("BACKUP DATABASE ? {$with} TO S3 ? {$timeout} CONFIG ? CREDENTIALS ? ;", [$database, $bucket, $config, $credentials]);
-        } catch (\Exception) {
-            $this->error('Backup failed. Please check your database credentials.');
+            $result = DB::select($rawQuery, [$bucket, $config, $credentials]);
+        } catch (QueryException $e) {
+            $this->error('Backup failed. Please check your SingleStore backup credentials.');
+            $this->error($e->getMessage());
 
             return Command::FAILURE;
         }
@@ -76,21 +81,24 @@ class SinglestoreBackupCommand extends Command
      */
     public function getParameters()
     {
+        $config = [
+            'endpoint_url' => (string) config('singlestore-backup.endpoint'),
+        ];
+
+        if ($this->option('multipart_chunk_size_mb')) {
+            $config[]['multipart_chunk_size_mb'] = $this->option('multipart_chunk_size_mb');
+        }
+
         return [
-            config('database.connections.singlestore.database'),
+            (string) config('database.connections.singlestore.database'),
 
-            config('singlestore-backup.bucket'),
+            (string) config('singlestore-backup.bucket'),
 
-            json_encode([
-                'endpoint_url' => config('singlestore-backup.endpoint'),
-                ($this->option('multipart_chunk_size_mb'))
-                    ? ['multipart_chunk_size_mb' => $this->option('multipart_chunk_size_mb')]
-                    : [],
-            ]),
+            json_encode($config),
 
             json_encode([
-                'aws_access_key_id' => config('singlestore-backup.access_key'),
-                'aws_secret_access_key' => config('singlestore-backup.secret_key'),
+                'aws_access_key_id'     => (string) config('singlestore-backup.access_key'),
+                'aws_secret_access_key' => (string) config('singlestore-backup.secret_key'),
             ]),
         ];
     }
