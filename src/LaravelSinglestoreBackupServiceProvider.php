@@ -4,7 +4,7 @@ namespace Srdante\LaravelSinglestoreBackup;
 
 use Illuminate\Support\ServiceProvider;
 
-class SinglestoreBackupServiceProvider extends ServiceProvider
+class LaravelSinglestoreBackupServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
