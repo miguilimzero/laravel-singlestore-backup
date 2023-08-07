@@ -1,5 +1,6 @@
 {
     "name": "miguilim/laravel-singlestore-backup",
+    "description": "A package that makes it easy to make backups of your SingleStore database.",
     "type": "library",
     "license": "MIT",
     "autoload": {
