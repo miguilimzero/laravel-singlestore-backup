@@ -26,9 +26,11 @@ composer require miguilim/laravel-singlestore-backup
 You must add the following lines to your .env file in order to configure your S3 credentials:
 
 ```env
+SINGLESTORE_BACKUP_DRIVER=
+SINGLESTORE_BACKUP_PATH=
 SINGLESTORE_BACKUP_ENDPOINT=
 SINGLESTORE_BACKUP_BUCKET=
-SINGLESTORE_BACKUP_ACCESS_KEY=
+SINGLESTORE_BACKUP_PUBLIC_KEY=
 SINGLESTORE_BACKUP_SECRET_KEY=
 ```
 

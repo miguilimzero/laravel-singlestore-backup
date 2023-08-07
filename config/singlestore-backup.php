@@ -3,17 +3,49 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | SingleStore Backup S3 Endpoint
+    | SingleStore Backup Driver
     |--------------------------------------------------------------------------
     |
-    | The endpoint of the S3 compatible storage.
+    | The selected backup storage driver.
+    |
+    | Available drivers: "s3", "gcs", "azure", "local".
+    |
+    */
+    'driver' => env('SINGLESTORE_BACKUP_DRIVER'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | SingleStore Backup Path
+    |--------------------------------------------------------------------------
+    |
+    | The file path where the backups will be stored (Only used by "local" driver).
+    |
+    */
+    'path' => env('SINGLESTORE_BACKUP_PATH'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | SingleStore Backup Region
+    |--------------------------------------------------------------------------
+    |
+    | The AWS S3 region where the backups will be stored (Only used by "s3" driver).
+    |
+    */
+    'region' => env('SINGLESTORE_BACKUP_REGION'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | SingleStore Backup Endpoint
+    |--------------------------------------------------------------------------
+    |
+    | The endpoint of the compatible storage.
     |
     */
     'endpoint' => env('SINGLESTORE_BACKUP_ENDPOINT'),
 
     /*
     |--------------------------------------------------------------------------
-    | SingleStore Backup S3 Bucket
+    | SingleStore Backup Bucket
     |--------------------------------------------------------------------------
     |
     | The bucket where the backups will be stored.
@@ -23,20 +55,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | SingleStore Backup S3 Access Key
+    | SingleStore Backup Public Key
     |--------------------------------------------------------------------------
     |
-    | The access key of the S3 compatible storage.
+    | The public key of the selected driver storage.
     |
     */
-    'access_key' => env('SINGLESTORE_BACKUP_ACCESS_KEY'),
+    'public_key' => env('SINGLESTORE_BACKUP_PUBLIC_KEY'),
 
     /*
     |--------------------------------------------------------------------------
-    | SingleStore Backup S3 Secret Access Key
+    | SingleStore Backup Secret Key
     |--------------------------------------------------------------------------
     |
-    | The secret key of the S3 compatible storage.
+    | The secret key of the selected driver storage.
     |
     */
     'secret_key' => env('SINGLESTORE_BACKUP_SECRET_KEY'),
