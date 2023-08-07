@@ -1,6 +1,6 @@
 <?php
 
-namespace Srdante\LaravelSinglestoreBackup;
+namespace Miguilim\LaravelSinglestoreBackup;
 
 use Illuminate\Support\ServiceProvider;
 

@@ -1,12 +1,11 @@
 <?php
 
-namespace Srdante\LaravelSinglestoreBackup\Console;
+namespace Miguilim\LaravelSinglestoreBackup\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use Srdante\LaravelSinglestoreBackup\SinglestoreBackup;
+use Miguilim\LaravelSinglestoreBackup\SinglestoreBackup;
 
 class SinglestoreBackupCommand extends Command
 {

@@ -1,18 +1,12 @@
 {
-    "name": "srdante/laravel-singlestore-backup",
+    "name": "miguilim/laravel-singlestore-backup",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Srdante\\LaravelSinglestoreBackup\\": "src/"
+            "Miguilim\\LaravelSinglestoreBackup\\": "src/"
         }
     },
-    "authors": [
-        {
-            "name": "srdante",
-            "email": "35383529+srdante@users.noreply.github.com"
-        }
-    ],
     "require": {
         "illuminate/config": "^9.0|^10.2",
         "illuminate/console": "^9.0|^10.2",
@@ -22,7 +16,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Srdante\\LaravelSinglestoreBackup\\LaravelSinglestoreBackupServiceProvider"
+                "Miguilim\\LaravelSinglestoreBackup\\LaravelSinglestoreBackupServiceProvider"
             ]
         }
     },

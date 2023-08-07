@@ -18,7 +18,7 @@ Laravel SingleStore Backup is a package that makes it easy to make backups of yo
 You can install the package via composer:
 
 ```sh
-composer require srdante/laravel-singlestore-backup
+composer require miguilim/laravel-singlestore-backup
 ```
 
 ## Configuring
