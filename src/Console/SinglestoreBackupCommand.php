@@ -14,7 +14,7 @@ class SinglestoreBackupCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'singlestore:backup {--timeout=} {--init} {--differential} {--s3_force_path_style} {--multipart_chunk_size_mb=}';
+    protected $signature = 'singlestore:backup {--timeout=} {--init} {--differential}';
 
     /**
      * The console command description.
@@ -40,11 +40,19 @@ class SinglestoreBackupCommand extends Command
         $this->warn('Starting backup... This might take a while.');
 
         $singlestoreBackup = new SinglestoreBackup(
-            $this->option('timeout'),
-            $this->option('init'),
-            $this->option('differential'),
-            $this->option('multipart_chunk_size_mb'),
-            $this->option('s3_force_path_style')
+            driver: config('singlestore-backup.driver'),
+            database: config('database.connections.singlestore.database'),
+            path: config('singlestore-backup.path'),
+            endpoint: config('singlestore-backup.endpoint'),
+            timeout: $this->option('timeout'),
+            publicKey: config('singlestore-backup.public_key'),
+            secretKey: config('singlestore-backup.secret_key'),
+            bucket: config('singlestore-backup.bucket'),
+            init: $this->option('init'),
+            differential: $this->option('differential'),
+            region: config('singlestore-backup.region'),
+            multipartChunkSizeMb: config('singlestore-backup.multipart_chunk_size'),
+            s3ForcePathStyle: config('singlestore-backup.force_path_style')
         );
 
         try {

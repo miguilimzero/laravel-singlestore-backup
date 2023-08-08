@@ -6,20 +6,24 @@ use Illuminate\Support\Facades\DB;
 
 class SinglestoreBackup
 {
-    protected string $driver;
-
     public function __construct(
+        protected string $driver,
+        protected string $database,
+        protected ?string $path = null,
+        protected ?string $endpoint = null,
         protected ?int $timeout = null,
+        protected ?string $publicKey = null,
+        protected ?string $secretKey = null,
+        protected ?string $bucket = null,
         protected bool $init = false,
         protected bool $differential = false,
+        protected ?string $region = null,
         protected ?int $multipartChunkSizeMb = null,
-        protected ?bool $s3ForcePathStyle = null
+        protected ?bool $s3ForcePathStyle = null,
     ) {
         if ($init && $differential) {
             throw new \InvalidArgumentException('You can\'t use "$init" and "$differential" attributes at the same time.');
         }
-
-        $this->driver = config('singlestore-backup.driver');
 
         if ($this->driver !== 's3' && $this->multipartChunkSizeMb) {
             throw new \InvalidArgumentException('You can\'t use "$multipartChunkSizeMb" attribute with "' . $this->driver . '" driver.');
@@ -50,21 +54,16 @@ class SinglestoreBackup
             $timeoutStatement = "TIMEOUT {$this->timeout}";
         }
 
-        $database = (string) config('database.connections.singlestore.database');
-        $path     = (string) config('singlestore-backup.path');
-
         // Mount query
-        $rawQuery = "BACKUP DATABASE {$database} TO ? {$timeoutStatement}";
+        $rawQuery = "BACKUP DATABASE {$this->database} TO ? {$timeoutStatement}";
         $rawQuery = preg_replace('/\s+/', ' ', $rawQuery);
 
-        return DB::select($rawQuery, [$path]);
+        return DB::select($rawQuery, [$this->path]);
     }
 
     protected function executeExternalStorageQuery(): array
     {
-        [$to, $bucket, $config, $credentials] = static::getExternalStorageParameters();
-
-        $database = (string) config('database.connections.singlestore.database');
+        [$to, $config, $credentials] = static::getExternalStorageParameters();
 
         // Mount statements
         $with = '';
@@ -81,33 +80,30 @@ class SinglestoreBackup
         }
 
         // Mount query
-        $rawQuery = "BACKUP DATABASE {$database} {$with} TO {$to} ? {$timeoutStatement} CONFIG ? CREDENTIALS ?";
+        $rawQuery = "BACKUP DATABASE {$this->database} {$with} TO {$to} ? {$timeoutStatement} CONFIG ? CREDENTIALS ?";
         $rawQuery = preg_replace('/\s+/', ' ', $rawQuery);
 
-        return DB::select($rawQuery, [$bucket, $config, $credentials]);
+        return DB::select($rawQuery, [$this->bucket, $config, $credentials]);
     }
 
     protected function getExternalStorageParameters(): array
     {
         $config = [
-            'endpoint_url' => (string) config('singlestore-backup.endpoint'),
+            'endpoint_url' => $this->endpoint,
         ];
-
-        $publicKey = (string) config('singlestore-backup.public_key');
-        $secretKey = (string) config('singlestore-backup.secret_key');
     
         $credentials = match($this->driver) {
             's3' => [
-                'aws_access_key_id'     => $publicKey,
-                'aws_secret_access_key' => $secretKey,
+                'aws_access_key_id'     => $this->publicKey,
+                'aws_secret_access_key' => $this->secretKey,
             ],
             'gcs' => [
-                'access_id'  => $publicKey,
-                'secret_key' => $secretKey,
+                'access_id'  => $this->publicKey,
+                'secret_key' => $this->secretKey,
             ],
             'azure' => [
-                'account_name' => $publicKey,
-                'account_key'  => $secretKey,
+                'account_name' => $this->publicKey,
+                'account_key'  => $this->secretKey,
             ],
         };
 
@@ -119,10 +115,12 @@ class SinglestoreBackup
             $config[]['s3_force_path_style'] = $this->s3ForcePathStyle;
         }
 
+        if ($this->driver === 's3' && $this->region) {
+            $config['region'] = $this->region;
+        }
+
         return [
             strtoupper($this->driver),
-
-            (string) config('singlestore-backup.bucket'),
 
             json_encode($config),
 

@@ -11,8 +11,8 @@ Laravel SingleStore Backup is a package that makes it easy to make backups of yo
 - [Setting Timeout Parameter](#setting-timeout-parameter)
 - [Init Backup](#init-backup-non-local-only)
 - [Differential Backup](#differential-backup-non-local-only)
-- [Setting multipart_chunk_size_mb Parameter](#setting-multipart_chunk_size_mb-parameter-s3-only)
-- [Setting s3_force_path_style Parameter](#setting-s3_force_path_style-parameter-s3-compatible-only)
+- [Advanced Usage](#advanced-usage)
+- [Publishing Config File](#publishing-config-file)
 - [License](#license)
 
 ## Installation
@@ -44,6 +44,8 @@ SINGLESTORE_BACKUP_PATH=
 
 # S3 storage
 SINGLESTORE_BACKUP_REGION=
+SINGLESTORE_BACKUP_MULTIPART_CHUNK_SIZE=
+SINGLESTORE_BACKUP_FORCE_PATH_STYLE=
 
 # External storages
 SINGLESTORE_BACKUP_ENDPOINT=
@@ -68,7 +70,7 @@ You can set the timeout parameter, a value specified in milliseconds, to determi
 php artisan singlestore:backup --timeout=30000
 ```
 
-## Init Backup (Non-local Only)
+## Init Backup
 
 If you're making an incremental backup and want to create the `INIT` backup, you can do that by using the `--init` parameter.
 
@@ -76,7 +78,7 @@ If you're making an incremental backup and want to create the `INIT` backup, you
 php artisan singlestore:backup --init
 ``` 
 
-## Differential Backup (Non-local Only)
+## Differential Backup
 
 If you're making an incremental backup and want to do a `DIFFERENTIAL` backup, you can do that by using the `--differential` parameter.
 
@@ -84,21 +86,10 @@ If you're making an incremental backup and want to do a `DIFFERENTIAL` backup, y
 php artisan singlestore:backup --differential
 ``` 
 
-## Setting multipart_chunk_size_mb Parameter (S3 Only)
+## Advanced Usage
 
-The `multipart_chunk_size_mb` must be in the range of [5..500]. By default, the chunk size is 5 MB. A larger chunk size allows users to upload large files without going over Amazon’s limitation on maximum number of parts per upload. Although, a larger chunk size increases the chance of a network error during the upload to S3. If a chunk fails to upload, SingleStoreDB retries uploading it until the limit set on the number of retries by AWS is reached. Each partition will use "multipart_chunk_size_mb" MB(s) of additional memory.
 
-```sh
-php artisan singlestore:backup --multipart_chunk_size_mb=10
-```
-
-## Setting s3_force_path_style Parameter (S3 Compatible Only)
-
-`s3_force_path_style` is an optional boolean JSON config option that defaults to true. It specifies whether to use path style (the default: region.amazonaws.com/bucket) or virtual address style (bucket.region.amazonaws.com) syntax when specifying the location of the bucket.
-
-```sh
-php artisan singlestore:backup --s3_force_path_style
-```
+## Publishing Config File
 
 ## License
 
