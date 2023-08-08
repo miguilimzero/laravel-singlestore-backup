@@ -14,7 +14,7 @@ class SinglestoreBackupCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'singlestore:backup {--timeout=} {--init} {--differential} {--multipart_chunk_size_mb=}';
+    protected $signature = 'singlestore:backup {--timeout=} {--init} {--differential} {--s3_force_path_style} {--multipart_chunk_size_mb=}';
 
     /**
      * The console command description.
@@ -44,6 +44,7 @@ class SinglestoreBackupCommand extends Command
             $this->option('init'),
             $this->option('differential'),
             $this->option('multipart_chunk_size_mb'),
+            $this->option('s3_force_path_style')
         );
 
         try {

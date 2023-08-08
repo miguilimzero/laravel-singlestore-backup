@@ -12,7 +12,8 @@ class SinglestoreBackup
         protected ?int $timeout = null,
         protected bool $init = false,
         protected bool $differential = false,
-        protected ?int $multipartChunkSizeMb = null
+        protected ?int $multipartChunkSizeMb = null,
+        protected ?bool $s3ForcePathStyle = null
     ) {
         if ($init && $differential) {
             throw new \InvalidArgumentException('You can\'t use "$init" and "$differential" attributes at the same time.');
@@ -22,6 +23,10 @@ class SinglestoreBackup
 
         if ($this->driver !== 's3' && $this->multipartChunkSizeMb) {
             throw new \InvalidArgumentException('You can\'t use "$multipartChunkSizeMb" attribute with "' . $this->driver . '" driver.');
+        }
+
+        if ($this->driver !== 's3' && $this->s3ForcePathStyle) {
+            throw new \InvalidArgumentException('You can\'t use "$s3ForcePathStyle" attribute with "' . $this->driver . '" driver.');
         }
 
         if ($this->driver === 'local' && ($this->init || $this->differential)) {
@@ -108,6 +113,10 @@ class SinglestoreBackup
 
         if ($this->multipartChunkSizeMb) {
             $config[]['multipart_chunk_size_mb'] = $this->multipartChunkSizeMb;
+        }
+
+        if ($this->s3ForcePathStyle) {
+            $config[]['s3_force_path_style'] = $this->s3ForcePathStyle;
         }
 
         return [
