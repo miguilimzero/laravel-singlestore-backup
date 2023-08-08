@@ -12,6 +12,7 @@ Laravel SingleStore Backup is a package that makes it easy to make backups of yo
 - [Init Backup](#init-backup-non-local-only)
 - [Differential Backup](#differential-backup-non-local-only)
 - [Setting multipart_chunk_size_mb Parameter](#setting-multipart_chunk_size_mb-parameter-s3-only)
+- [Setting s3_force_path_style Parameter](#setting-s3_force_path_style-parameter-s3-compatible-only)
 - [License](#license)
 
 ## Installation
@@ -40,6 +41,9 @@ SINGLESTORE_BACKUP_DRIVER=
 
 # Local storage
 SINGLESTORE_BACKUP_PATH= 
+
+# S3 storage
+SINGLESTORE_BACKUP_REGION=
 
 # External storages
 SINGLESTORE_BACKUP_ENDPOINT=
@@ -86,6 +90,14 @@ The `multipart_chunk_size_mb` must be in the range of [5..500]. By default, the 
 
 ```sh
 php artisan singlestore:backup --multipart_chunk_size_mb=10
+```
+
+## Setting s3_force_path_style Parameter (S3 Compatible Only)
+
+`s3_force_path_style` is an optional boolean JSON config option that defaults to true. It specifies whether to use path style (the default: region.amazonaws.com/bucket) or virtual address style (bucket.region.amazonaws.com) syntax when specifying the location of the bucket.
+
+```sh
+php artisan singlestore:backup --s3_force_path_style
 ```
 
 ## License
