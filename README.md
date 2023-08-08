@@ -42,7 +42,7 @@ SINGLESTORE_BACKUP_DRIVER=
 # Local storage
 SINGLESTORE_BACKUP_PATH= 
 
-# S3 storage
+# S3 storage (optionals)
 SINGLESTORE_BACKUP_REGION=
 SINGLESTORE_BACKUP_MULTIPART_CHUNK_SIZE=
 SINGLESTORE_BACKUP_FORCE_PATH_STYLE=
@@ -88,8 +88,43 @@ php artisan singlestore:backup --differential
 
 ## Advanced Usage
 
+Sometimes the simple backup command with configs may not be flexible as you want. Instead, you can use the `SinglestoreBackup` class:
+
+```php
+use Miguilim\LaravelSinglestoreBackup\SinglestoreBackup;
+
+$backupInstance = new SinglestoreBackup(
+    driver: 'local',
+    database: 'mydatabase',
+    path: '/my-backup/path'
+);
+
+$result = $backupInstance->executeQuery();
+```
+
+Available arguments:
+
+- `driver`
+- `database`
+- `path`
+- `endpoint`
+- `timeout`
+- `publicKey`
+- `secretKey`
+- `bucket`
+- `init`
+- `differential`
+- `region`
+- `multipartChunkSizeMb`
+- `s3ForcePathStyle`
 
 ## Publishing Config File
+
+You can publish the package configuration file to your project with the following command:
+
+```sh
+php artisan vendor:publish --tag=singlestore-backup-config
+```
 
 ## License
 
