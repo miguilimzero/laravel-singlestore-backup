@@ -88,9 +88,7 @@ class SinglestoreBackup
 
     protected function getExternalStorageParameters(): array
     {
-        $config = [
-            'endpoint_url' => $this->endpoint,
-        ];
+        $config = [];
     
         $credentials = match($this->driver) {
             's3' => [
@@ -117,6 +115,8 @@ class SinglestoreBackup
 
         if ($this->driver === 's3' && $this->region) {
             $config['region'] = $this->region;
+        } else {
+            $config['endpoint_url'] = $this->endpoint;
         }
 
         return [
