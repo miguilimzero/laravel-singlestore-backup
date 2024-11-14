@@ -9,8 +9,8 @@ Laravel SingleStore Backup is a package that makes it easy to make backups of yo
 - [Configuring](#configuring)
 - [Basic Usage](#basic-usage)
 - [Setting Timeout Parameter](#setting-timeout-parameter)
-- [With Date Parameter](#with-date-parameter)
-- [With Time Parameter](#with-time-parameter)
+- [Setting With Date Parameter](#setting-with-date-parameter)
+- [Setting With Time Parameter](#setting-with-time-parameter)
 - [Init Backup](#init-backup-non-local-only)
 - [Differential Backup](#differential-backup-non-local-only)
 - [Advanced Usage](#advanced-usage)
@@ -65,7 +65,7 @@ Below there is a simple example of how you use the backup command. By default, t
 php artisan singlestore:backup
 ``` 
 
-## Setting Timeout Parameter
+### Setting Timeout Parameter
 
 You can set the timeout parameter, a value specified in milliseconds, to determines the length of time to wait for the `BACKUP DATABASE` command to commit across the cluster. If not specified, the `default_distributed_ddl_timeout` global variable value is used.
 
@@ -73,7 +73,7 @@ You can set the timeout parameter, a value specified in milliseconds, to determi
 php artisan singlestore:backup --timeout=30000
 ```
 
-## With Date Parameter
+### Setting With Date Parameter
 
 If you want to add the date to the backup name, you can do that by using the `--with-date` parameter.
 
@@ -81,7 +81,7 @@ If you want to add the date to the backup name, you can do that by using the `--
 php artisan singlestore:backup --with-date
 ``` 
 
-## With Time Parameter
+### Setting With Time Parameter
 
 If you want to add the time to the backup name, you can do that by using the `--with-time` parameter.
 
@@ -89,9 +89,10 @@ If you want to add the time to the backup name, you can do that by using the `--
 php artisan singlestore:backup --with-time
 ```
 
-> Note: The `--with-date` and `--with-time` cannot be used in an incremental backup.
+> [!IMPORTANT]
+> The `--with-date` and `--with-time` parameters cannot be used in an incremental backup.
 
-## Init Backup
+### Init Backup
 
 If you're making an incremental backup and want to create the `INIT` backup, you can do that by using the `--init` parameter.
 
@@ -99,7 +100,7 @@ If you're making an incremental backup and want to create the `INIT` backup, you
 php artisan singlestore:backup --init
 ``` 
 
-## Differential Backup
+### Differential Backup
 
 If you're making an incremental backup and want to do a `DIFFERENTIAL` backup, you can do that by using the `--differential` parameter.
 
