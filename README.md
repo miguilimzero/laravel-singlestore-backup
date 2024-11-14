@@ -121,7 +121,7 @@ php artisan singlestore:prune-backups
 ```
 
 > [!IMPORTANT]
-> This command can only be executed with the `s3` driver.
+> All pruning command can only be executed with the `s3` driver, and they follow the path specified in the `SINGLESTORE_BACKUP_PATH` environment variable.
 
 ### Prune Incremental Backups
 
