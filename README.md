@@ -13,6 +13,10 @@ Laravel SingleStore Backup is a package that makes it easy to make backups of yo
   - [Setting With Time Parameter](#setting-with-time-parameter)
   - [Init Backup](#init-backup-non-local-only)
   - [Differential Backup](#differential-backup-non-local-only)
+- [Prune Backups](#prune-backups)
+  - [Prune Incremental Backups](#prune-incremental-backups)
+  - [Prune Backups Older Than Days](#prune-backups-older-than-days)
+  - [Prune Backups Older Than Date](#prune-backups-older-than-date)
 - [Advanced Usage](#advanced-usage)
 - [Publishing Config File](#publishing-config-file)
 - [License](#license)
@@ -44,7 +48,7 @@ SINGLESTORE_BACKUP_DRIVER=
 # Local / External storage
 SINGLESTORE_BACKUP_PATH= 
 
-# External storage (S3 / GCP / Azure)
+# External storage (S3 / GCS / Azure)
 SINGLESTORE_BACKUP_ENDPOINT=
 SINGLESTORE_BACKUP_BUCKET=
 SINGLESTORE_BACKUP_PUBLIC_KEY=
@@ -110,6 +114,41 @@ php artisan singlestore:backup --differential
 
 ## Prune Backups
 
+You can prune backups by using the `singlestore:prune-backups` command. This command will prune the `{$database}.backup` directory by default.
+
+```sh
+php artisan singlestore:prune-backups
+```
+
+> [!IMPORTANT]
+> This command can only be executed with the `s3` driver.
+
+### Prune Incremental Backups
+
+If you want to prune incremental backups, you can do that by using the `--incremental` parameter. This will prune the `{$database}.incr_backup` directory.
+
+```sh
+php artisan singlestore:prune-backups --incremental
+```
+
+### Prune Backups Older Than Days
+
+If you want to prune backups older than a certain number of days, you can do that by using the `--older-than-days` parameter. This will prune the `{$database}_(.*?).backup` (respecting the date) directory.
+
+```sh
+php artisan singlestore:prune-backups --older-than-days=30
+```
+
+### Prune Backups Older Than Date
+
+If you want to prune backups older than a certain date, you can do that by using the `--older-than-date` parameter. This will prune the `{$database}_(.*?).backup` (respecting the date) directory.
+
+```sh
+php artisan singlestore:prune-backups --older-than-date=2024-01-01
+```
+
+> [!IMPORTANT]
+> Be careful when using the `--older-than-date` or `--older-than-days` parameters. They will prune all directories matched with the `{$database}_(.*?).backup` pattern + respecting the date specified. It may delete other unrelated directories if they match the pattern.
 
 ## Advanced Usage
 
