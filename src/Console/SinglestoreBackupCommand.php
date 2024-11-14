@@ -34,6 +34,10 @@ class SinglestoreBackupCommand extends Command
             throw new InvalidArgumentException('You can\'t use --init and --differential options at the same time.');
         }
 
+        if (($this->option('with-date') || $this->option('with-time')) && $this->option('init') || $this->option('differential')) {
+            throw new InvalidArgumentException('You can\'t use --init or --differential options with --with-date or --with-time options.');
+        }
+
         /*
          * Start backup command
          */

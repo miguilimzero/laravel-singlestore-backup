@@ -8,11 +8,11 @@ Laravel SingleStore Backup is a package that makes it easy to make backups of yo
 - [Supported Drivers](#supported-drivers)
 - [Configuring](#configuring)
 - [Basic Usage](#basic-usage)
-- [Setting Timeout Parameter](#setting-timeout-parameter)
-- [Setting With Date Parameter](#setting-with-date-parameter)
-- [Setting With Time Parameter](#setting-with-time-parameter)
-- [Init Backup](#init-backup-non-local-only)
-- [Differential Backup](#differential-backup-non-local-only)
+  - [Setting Timeout Parameter](#setting-timeout-parameter)
+  - [Setting With Date Parameter](#setting-with-date-parameter)
+  - [Setting With Time Parameter](#setting-with-time-parameter)
+  - [Init Backup](#init-backup-non-local-only)
+  - [Differential Backup](#differential-backup-non-local-only)
 - [Advanced Usage](#advanced-usage)
 - [Publishing Config File](#publishing-config-file)
 - [License](#license)
@@ -107,6 +107,9 @@ If you're making an incremental backup and want to do a `DIFFERENTIAL` backup, y
 ```sh
 php artisan singlestore:backup --differential
 ``` 
+
+## Prune Backups
+
 
 ## Advanced Usage
 
