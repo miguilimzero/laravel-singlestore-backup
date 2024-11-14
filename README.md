@@ -9,6 +9,8 @@ Laravel SingleStore Backup is a package that makes it easy to make backups of yo
 - [Configuring](#configuring)
 - [Basic Usage](#basic-usage)
 - [Setting Timeout Parameter](#setting-timeout-parameter)
+- [With Date Parameter](#with-date-parameter)
+- [With Time Parameter](#with-time-parameter)
 - [Init Backup](#init-backup-non-local-only)
 - [Differential Backup](#differential-backup-non-local-only)
 - [Advanced Usage](#advanced-usage)
@@ -70,6 +72,24 @@ You can set the timeout parameter, a value specified in milliseconds, to determi
 ```sh
 php artisan singlestore:backup --timeout=30000
 ```
+
+## With Date Parameter
+
+If you want to add the date to the backup name, you can do that by using the `--with-date` parameter.
+
+```sh
+php artisan singlestore:backup --with-date
+``` 
+
+## With Time Parameter
+
+If you want to add the time to the backup name, you can do that by using the `--with-time` parameter.
+
+```sh
+php artisan singlestore:backup --with-time
+```
+
+> Note: The `--with-date` and `--with-time` cannot be used in an incremental backup.
 
 ## Init Backup
 
