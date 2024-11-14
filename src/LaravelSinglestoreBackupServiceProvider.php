@@ -48,6 +48,7 @@ class LaravelSinglestoreBackupServiceProvider extends ServiceProvider
 
         $this->commands([
             Console\SinglestoreBackupCommand::class,
+            Console\SinglestorePruneBackupsCommand::class,
         ]);
     }
 }
