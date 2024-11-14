@@ -39,19 +39,20 @@ You must add the following lines to your .env file in order to configure your S3
 ```env
 SINGLESTORE_BACKUP_DRIVER=
 
-# Local storage
+# Local / External storage
 SINGLESTORE_BACKUP_PATH= 
+
+# External storage (S3 / GCP / Azure)
+SINGLESTORE_BACKUP_ENDPOINT=
+SINGLESTORE_BACKUP_BUCKET=
+SINGLESTORE_BACKUP_PUBLIC_KEY=
+SINGLESTORE_BACKUP_SECRET_KEY=
 
 # S3 storage (optionals)
 SINGLESTORE_BACKUP_REGION=
 SINGLESTORE_BACKUP_MULTIPART_CHUNK_SIZE=
 SINGLESTORE_BACKUP_FORCE_PATH_STYLE=
-
-# External storages
-SINGLESTORE_BACKUP_ENDPOINT=
-SINGLESTORE_BACKUP_BUCKET=
-SINGLESTORE_BACKUP_PUBLIC_KEY=
-SINGLESTORE_BACKUP_SECRET_KEY=
+SINGLESTORE_BACKUP_COMPATIBILITY_MODE=
 ```
 
 ## Basic Usage
@@ -117,6 +118,9 @@ Available arguments:
 - `region`
 - `multipartChunkSizeMb`
 - `s3ForcePathStyle`
+- `compatibilityMode`
+- `withDate`
+- `withTime`
 
 ## Publishing Config File
 
