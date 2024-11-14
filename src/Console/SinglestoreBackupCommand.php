@@ -14,7 +14,7 @@ class SinglestoreBackupCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'singlestore:backup {--timeout=} {--init} {--differential}';
+    protected $signature = 'singlestore:backup {--timeout=} {--init} {--differential} {--with-date} {--with-time}';
 
     /**
      * The console command description.
@@ -52,7 +52,10 @@ class SinglestoreBackupCommand extends Command
             differential: $this->option('differential'),
             region: config('singlestore-backup.region'),
             multipartChunkSizeMb: config('singlestore-backup.multipart_chunk_size'),
-            s3ForcePathStyle: config('singlestore-backup.force_path_style')
+            s3ForcePathStyle: config('singlestore-backup.force_path_style'),
+            compatibilityMode: config('singlestore-backup.compatibility_mode'),
+            withDate: $this->option('with-date'),
+            withTime: $this->option('with-time'),
         );
 
         try {

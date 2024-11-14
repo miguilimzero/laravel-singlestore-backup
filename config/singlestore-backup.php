@@ -76,4 +76,6 @@ return [
     'multipart_chunk_size' => (int) env('SINGLESTORE_BACKUP_MULTIPART_CHUNK_SIZE'),
 
     'force_path_style' => (bool) env('SINGLESTORE_BACKUP_FORCE_PATH_STYLE'),
+
+    'compatibility_mode' => (bool) env('SINGLESTORE_BACKUP_COMPATIBILITY_MODE'),
 ];
