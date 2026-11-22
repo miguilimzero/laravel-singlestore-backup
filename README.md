@@ -11,8 +11,12 @@ Laravel SingleStore Backup is a package that makes it easy to make backups of yo
   - [Setting Timeout Parameter](#setting-timeout-parameter)
   - [Setting With Date Parameter](#setting-with-date-parameter)
   - [Setting With Time Parameter](#setting-with-time-parameter)
+  - [Setting Name Parameter](#setting-name-parameter)
   - [Init Backup](#init-backup-non-local-only)
   - [Differential Backup](#differential-backup-non-local-only)
+- [Incremental Backup](#incremental-backup)
+  - [Setting Optimize Every Parameter](#setting-optimize-every-parameter)
+  - [Force Optimization](#force-optimization)
 - [Prune Backups](#prune-backups)
   - [Prune Incremental Backups](#prune-incremental-backups)
   - [Prune Backups Older Than Days](#prune-backups-older-than-days)
@@ -96,6 +100,14 @@ php artisan singlestore:backup --with-time
 > [!IMPORTANT]
 > The `--with-date` and `--with-time` parameters cannot be used in an incremental backup.
 
+### Setting Name Parameter
+
+If you want to use a custom backup name instead of the database name, you can do that by using the `--name` parameter.
+
+```sh
+php artisan singlestore:backup --name=mybackup
+```
+
 ### Init Backup
 
 If you're making an incremental backup and want to create the `INIT` backup, you can do that by using the `--init` parameter.
@@ -112,6 +124,33 @@ If you're making an incremental backup and want to do a `DIFFERENTIAL` backup, y
 php artisan singlestore:backup --differential
 ``` 
 
+## Incremental Backup
+
+You can run the whole incremental backup cycle by using the `singlestore:incremental-backup` command. This command will create the `INIT` backup if there is none, otherwise it will do a `DIFFERENTIAL` backup. Once a month, it will create a new `INIT` backup and prune the previous one to optimize the backup.
+
+```sh
+php artisan singlestore:incremental-backup
+```
+
+> [!IMPORTANT]
+> This command can only be executed with the `s3` driver. The backups are stored in the `{$database}_{$date}_{$time}.incr_backup` directory, and the current one is tracked by the `{$database}.incr_backup.state` file. The previous backup is only pruned after the new `INIT` backup is created successfully.
+
+### Setting Optimize Every Parameter
+
+If you want to change how often the backup is optimized, you can do that by using the `--optimize-every` parameter. It accepts `daily`, `weekly`, `monthly`, `yearly` or a number of days.
+
+```sh
+php artisan singlestore:incremental-backup --optimize-every=weekly
+```
+
+### Force Optimization
+
+If you want to optimize the backup regardless of the interval, you can do that by using the `--optimize` parameter.
+
+```sh
+php artisan singlestore:incremental-backup --optimize
+```
+
 ## Prune Backups
 
 You can prune backups by using the `singlestore:prune-backups` command. This command will prune the `{$database}.backup` directory by default.
@@ -125,11 +164,14 @@ php artisan singlestore:prune-backups
 
 ### Prune Incremental Backups
 
-If you want to prune incremental backups, you can do that by using the `--incremental` parameter. This will prune the `{$database}.incr_backup` directory.
+If you want to prune incremental backups, you can do that by using the `--incremental` parameter. This will prune the `{$database}.incr_backup` directory and all the `{$database}_(date)_(time).incr_backup` directories created by the `singlestore:incremental-backup` command.
 
 ```sh
 php artisan singlestore:prune-backups --incremental
 ```
+
+> [!IMPORTANT]
+> Be careful when using the `--incremental` parameter. It will prune all directories matched with the `{$database}_(date)_(time).incr_backup` pattern, where the date is `Y-m-d` and the time is `H-i-s`. It may delete other unrelated directories if they match the pattern.
 
 ### Prune Backups Older Than Days
 
@@ -184,6 +226,7 @@ Available arguments:
 - `compatibilityMode`
 - `withDate`
 - `withTime`
+- `name`
 
 ## Publishing Config File
 
