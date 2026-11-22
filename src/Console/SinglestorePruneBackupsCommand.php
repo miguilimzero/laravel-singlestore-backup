@@ -5,10 +5,12 @@ namespace Miguilim\LaravelSinglestoreBackup\Console;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Storage;
+use Miguilim\LaravelSinglestoreBackup\Console\Concerns\InteractsWithBackupDisk;
 
 class SinglestorePruneBackupsCommand extends Command
 {
+    use InteractsWithBackupDisk;
+
     /**
      * The name and signature of the console command.
      *
@@ -53,20 +55,10 @@ class SinglestorePruneBackupsCommand extends Command
          */
         $this->warn('Starting backup pruning... This might take a while.');
 
-        $disk = Storage::build([
-            'driver'                  => config('singlestore-backup.driver'),
-            'key'                     => config('singlestore-backup.public_key'),
-            'secret'                  => config('singlestore-backup.secret_key'),
-            'region'                  => config('singlestore-backup.region') ?? 'us-east-1',
-            'bucket'                  => config('singlestore-backup.bucket'),
-            'endpoint'                => config('singlestore-backup.endpoint'),
-            'use_path_style_endpoint' => config('singlestore-backup.force_path_style'),
-        ]);
+        $disk = $this->buildBackupDisk();
 
         if ($this->option('incremental')) {
-            if ($disk->exists($this->getBackupName(incremental: true))) {
-                $disk->deleteDirectory($this->getBackupName(incremental: true));
-            } else {
+            if (! $this->pruneIncrementalBackups($disk)) {
                 $this->error('No incremental backup to prune found.');
 
                 return Command::FAILURE;
@@ -107,6 +99,32 @@ class SinglestorePruneBackupsCommand extends Command
         return null;
     }
 
+    protected function pruneIncrementalBackups(Filesystem $disk): bool
+    {
+        $found = 0;
+
+        if ($disk->exists($this->getBackupName(incremental: true))) {
+            $disk->deleteDirectory($this->getBackupName(incremental: true));
+
+            $found++;
+        }
+
+        // Backups created by the "singlestore:incremental-backup" command
+        $pattern = '/(^|\/)'.preg_quote(config('database.connections.singlestore.database'), '/').'_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.incr_backup$/';
+
+        foreach ($disk->directories(config('singlestore-backup.path')) as $directory) {
+            if (preg_match($pattern, $directory)) {
+                $disk->deleteDirectory($directory);
+
+                $found++;
+            }
+        }
+
+        $disk->delete($this->getIncrementalStateFileName());
+
+        return $found > 0;
+    }
+
     protected function pruneDateOrTimeBackups(Filesystem $disk, Carbon $olderThan): int
     {
         $directories = $disk->directories(config('singlestore-backup.path'));
@@ -131,13 +149,5 @@ class SinglestorePruneBackupsCommand extends Command
         }
 
         return $found > 0;
-    }
-
-    protected function getBackupName(bool $incremental = false): string
-    {
-        $path     = config('singlestore-backup.path');
-        $database = config('database.connections.singlestore.database');
-
-        return ($path ? "{$path}/" : '').$database.($incremental ? '.incr_backup' : '.backup');
     }
 }
