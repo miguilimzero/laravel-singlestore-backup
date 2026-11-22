@@ -23,6 +23,7 @@ class SinglestoreBackup
         protected bool $compatibilityMode = false,
         protected bool $withDate = false,
         protected bool $withTime = false,
+        protected ?string $name = null,
     ) {
         if ($init && $differential) {
             throw new \InvalidArgumentException('You can\'t use "$init" and "$differential" attributes at the same time.');
@@ -144,7 +145,7 @@ class SinglestoreBackup
 
     protected function mountFinalPath(): string
     {
-        $name = $this->database;
+        $name = $this->name ?? $this->database;
 
         if ($this->withDate) {
             $name .= '_'.date('Y-m-d');

@@ -14,7 +14,7 @@ class SinglestoreBackupCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'singlestore:backup {--timeout=} {--init} {--differential} {--with-date} {--with-time}';
+    protected $signature = 'singlestore:backup {--timeout=} {--init} {--differential} {--with-date} {--with-time} {--name=}';
 
     /**
      * The console command description.
@@ -60,6 +60,7 @@ class SinglestoreBackupCommand extends Command
             compatibilityMode: config('singlestore-backup.compatibility_mode'),
             withDate: $this->option('with-date'),
             withTime: $this->option('with-time'),
+            name: $this->option('name'),
         );
 
         try {
